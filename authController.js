@@ -43,7 +43,7 @@ const registerUser = async(c) => {
     await userService.createUser(user)
     await sessionService.createSession(c, user)
 
-    return c.text(JSON.stringify(body))
+    return c.redirect("/")
 }
 
 const showLoginForm = (c) => c.html(eta.render("login.eta"))
@@ -65,7 +65,7 @@ const loginUser = async(c) => {
 
     await sessionService.createSession(c, user)
 
-    return c.text(JSON.stringify(body))
+    return c.redirect("/")
 }
 
 export { showRegistrationForm, registerUser, showLoginForm, loginUser }

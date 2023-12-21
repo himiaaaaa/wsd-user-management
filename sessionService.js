@@ -7,7 +7,7 @@ const secret = "secret"
 
 const createSession = async(c, user) => {
     const sessionId = crypto.randomUUID()
-    setSignedCookie(c, "sessionId", sessionId, secret, {
+    await setSignedCookie(c, "sessionId", sessionId, secret, {
         path:"/"
     })
 
@@ -15,4 +15,16 @@ const createSession = async(c, user) => {
     await kv.set(["sessions", sessionId], user)
 }
 
-export { createSession }
+const getUserFromSession = async(c) => {
+    const sessionId = await getSignedCookie(c, secret, "sessionId")
+    if(!sessionId){
+        console.log("No such session")
+        return null
+    }
+
+    const kv = await Deno.openKv()
+    const user = await kv.get(["sessions", sessionId])
+    return user?.value ?? null
+}
+
+export { createSession, getUserFromSession }
