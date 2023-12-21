@@ -1,6 +1,7 @@
 import {
     getSignedCookie,
     setSignedCookie,
+    deleteCookie
 } from "https://deno.land/x/hono@v3.7.4/helper.ts";
 
 const secret = "secret"
@@ -27,4 +28,19 @@ const getUserFromSession = async(c) => {
     return user?.value ?? null
 }
 
-export { createSession, getUserFromSession }
+const deleteSession = async(c) => {
+    const sessionId = await getSignedCookie(c, secret, "sessionId")
+    if(!sessionId){
+        return;
+    }
+
+    deleteCookie(c, "sessionId", {
+        path:"/"
+    })
+
+    const kv = await Deno.openKv()
+    await kv.delete(["sessions", sessionId])
+
+}
+
+export { createSession, getUserFromSession, deleteSession }

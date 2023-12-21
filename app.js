@@ -15,4 +15,6 @@ app.post("/auth/login", authController.loginUser)
 app.get("/auth/registration", authController.showRegistrationForm);
 app.post("/auth/registration", authController.registerUser);
 
+app.post("/auth/logout", authController.logoutUser)
+
 export default app

@@ -68,4 +68,9 @@ const loginUser = async(c) => {
     return c.redirect("/")
 }
 
-export { showRegistrationForm, registerUser, showLoginForm, loginUser }
+const logoutUser = async(c) => {
+    await sessionService.deleteSession(c)
+    return c.redirect("/")
+}
+
+export { showRegistrationForm, registerUser, showLoginForm, loginUser, logoutUser }
