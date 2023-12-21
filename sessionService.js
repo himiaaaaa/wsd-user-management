@@ -6,6 +6,8 @@ import {
 
 const secret = "secret"
 
+const WEEK_IN_MILLISECONDS = 604800000;
+
 const createSession = async(c, user) => {
     const sessionId = crypto.randomUUID()
     await setSignedCookie(c, "sessionId", sessionId, secret, {
@@ -13,7 +15,9 @@ const createSession = async(c, user) => {
     })
 
     const kv = await Deno.openKv()
-    await kv.set(["sessions", sessionId], user)
+    await kv.set(["sessions", sessionId], user, {
+        expireIn: WEEK_IN_MILLISECONDS,
+    })
 }
 
 const getUserFromSession = async(c) => {
@@ -25,7 +29,17 @@ const getUserFromSession = async(c) => {
 
     const kv = await Deno.openKv()
     const user = await kv.get(["sessions", sessionId])
-    return user?.value ?? null
+    const foundUser = user?.value ?? null
+
+    if(!foundUser){
+        return null
+    }
+
+    await kv.set(["sessions", sessionId], foundUser, {
+        expireIn: WEEK_IN_MILLISECONDS
+    })
+
+    return foundUser
 }
 
 const deleteSession = async(c) => {
