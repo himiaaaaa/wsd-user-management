@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello user management!</title>
+  </head>
+  <body>
+    <h1>Registration!</h1>
+    <%~ include('/partials/validation-errors.eta', { field: "Email", errors: it?.errors?.email?._errors }) %>
+    <%~ include('/partials/validation-errors.eta', { field: "Password", errors: it?.errors?.password?._errors }) %>
+    <form method="POST" action="/auth/registration">
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" value="<%= it?.email ?? '' %>" /><br />
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password" value="<%= it?.password ?? '' %>"/><br />
+      <label for="verification">Password again:</label>
+      <input type="password" name="verification" id="verification" /><br />
+      <input type="submit" value="Register!" />
+    </form>
+  </body>
+</html>
